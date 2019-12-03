@@ -161,6 +161,14 @@ public class BooksPane extends VBox {
                 System.out.println("hej");
             }
         });
+        
+        disconnectItem.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                controller.disconnect();
+                System.out.println("då");
+            }
+        });
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, searchMenu, manageMenu);

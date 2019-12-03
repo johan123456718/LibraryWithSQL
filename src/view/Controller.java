@@ -54,20 +54,32 @@ public class Controller {
                         "Enter a search string!", WARNING);
             }
         } catch (Exception e) {
-            booksView.showAlertAndWait("Database error.",ERROR);
+            booksView.showAlertAndWait("Database error.", ERROR);
         }
     }
 
     // TODO:
     // Add methods for all types of user interaction (e.g. via  menus).
-    
-    protected void connect(){
+    protected void connect() {
         try {
             booksDb.connect("laboration1");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch(ClassNotFoundException e){e.printStackTrace();}
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
+
+    protected void disconnect() {
+        try {
+            booksDb.disconnect();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+}

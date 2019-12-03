@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +29,8 @@ import java.util.List;
 public class MockBooksDb implements BooksDbInterface {
 
     private final List<Book> books;
-
+    private Connection con;
+    
     public MockBooksDb() {
         books = Arrays.asList(DATA);
     }
@@ -39,7 +43,6 @@ public class MockBooksDb implements BooksDbInterface {
         String server
                 = "jdbc:mysql://localhost:3306/" + database
                 + "?UseClientEnc=UTF8" + "?useTimezone=true&serverTimezone=UTC";
-        Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(server, user, pwd);
@@ -54,12 +57,49 @@ public class MockBooksDb implements BooksDbInterface {
 
             }
         }
+                    
+        executeQuery(con, "SELECT * FROM T_Book");
         return true;
     }
+    
+    public static void executeQuery(Connection con, String query) throws SQLException {
 
+        try (Statement stmt = con.createStatement()) {
+            // Execute the SQL statement
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Get the attribute names
+            ResultSetMetaData metaData = rs.getMetaData();
+            int ccount = metaData.getColumnCount();
+            for (int c = 1; c <= ccount; c++) {
+                System.out.print(metaData.getColumnName(c) + "\t");
+            }
+            System.out.println();
+
+            // Get the attribute values
+            while (rs.next()) {
+                // NB! This is an example, -not- the preferred way to retrieve data.
+                // You should use methods that return a specific data type, like
+                // rs.getInt(), rs.getString() or such.
+                // It's also advisable to store each tuple (row) in an object of
+                // custom type (e.g. Employee).
+                for (int c = 1; c <= ccount; c++) {
+                    System.out.print(rs.getObject(c) + "\t");
+                }
+                System.out.println();
+            }
+
+        }
+    }
     @Override
     public void disconnect() throws IOException, SQLException {
-        // mock implementation
+        try {
+            if (con != null) {
+                con.close();
+                System.out.println("Connection closed.");
+            }
+        } catch (SQLException e) {
+        }
     }
 
     @Override
