@@ -1,9 +1,13 @@
 package view;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import model.SearchMode;
 import model.Book;
 import model.BooksDbInterface;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static javafx.scene.control.Alert.AlertType.*;
 
@@ -56,4 +60,14 @@ public class Controller {
 
     // TODO:
     // Add methods for all types of user interaction (e.g. via  menus).
-}
+    
+    protected void connect(){
+        try {
+            booksDb.connect("laboration1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }catch(ClassNotFoundException e){e.printStackTrace();}
+        }
+    }

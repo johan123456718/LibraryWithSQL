@@ -2,7 +2,7 @@ package view;
 
 import model.SearchMode;
 import model.Book;
-import model.MySQLDB;
+import model.MockBooksDb;
 import java.sql.Date;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -42,7 +42,7 @@ public class BooksPane extends VBox {
 
     private MenuBar menuBar;
 
-    public BooksPane(MySQLDB booksDb) {
+    public BooksPane(MockBooksDb booksDb) {
         final Controller controller = new Controller(booksDb, this);
         this.init(controller);
     }
@@ -77,7 +77,7 @@ public class BooksPane extends VBox {
         // init views and event handlers
         initBooksTable();
         initSearchView(controller);
-        initMenus();
+        initMenus(controller);
 
         FlowPane bottomPane = new FlowPane();
         bottomPane.setHgap(10);
@@ -134,7 +134,7 @@ public class BooksPane extends VBox {
         });
     }
 
-    private void initMenus() {
+    private void initMenus(Controller controller) {
 
         Menu fileMenu = new Menu("File");
         MenuItem exitItem = new MenuItem("Exit");
@@ -153,6 +153,14 @@ public class BooksPane extends VBox {
         MenuItem removeItem = new MenuItem("Remove");
         MenuItem updateItem = new MenuItem("Update");
         manageMenu.getItems().addAll(addItem, removeItem, updateItem);
+        
+        connectItem.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                controller.connect();
+                System.out.println("hej");
+            }
+        });
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, searchMenu, manageMenu);
