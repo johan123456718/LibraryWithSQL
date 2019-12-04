@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package booksdbclient.model;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -47,35 +47,6 @@ public class MockBooksDb implements BooksDbInterface {
         return true;
     }
     
-    public static void executeQuery(Connection con, String query) throws SQLException {
-
-        try (Statement stmt = con.createStatement()) {
-            // Execute the SQL statement
-            ResultSet rs = stmt.executeQuery(query);
-
-            // Get the attribute names
-            ResultSetMetaData metaData = rs.getMetaData();
-            int ccount = metaData.getColumnCount();
-            for (int c = 1; c <= ccount; c++) {
-                System.out.print(metaData.getColumnName(c) + "\t");
-            }
-            System.out.println();
-
-            // Get the attribute values
-            while (rs.next()) {
-                // NB! This is an example, -not- the preferred way to retrieve data.
-                // You should use methods that return a specific data type, like
-                // rs.getInt(), rs.getString() or such.
-                // It's also advisable to store each tuple (row) in an object of
-                // custom type (e.g. Employee).
-                for (int c = 1; c <= ccount; c++) {
-                    System.out.print(rs.getObject(c) + "\t");
-                }
-                System.out.println();
-            }
-
-        }
-    }
     @Override
     public void disconnect() throws IOException, SQLException {
         try {
@@ -90,47 +61,21 @@ public class MockBooksDb implements BooksDbInterface {
     @Override
     public List<Book> searchBooksByTitle(String searchTitle)
             throws IOException, SQLException {
-        String sql = "SELECT * FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN" 
-        + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Book.title LIKE ?";
         List<Book> result = new ArrayList<>();
-        
-            PreparedStatement selectTitle = con.prepareStatement(sql);
-            selectTitle.setString(1, "%" + searchTitle + "%");
-            // 1. precompiled statment?
+        String sql = "SELECT T_book.isbn, T_Book.title, T_Book.genre, T_Book.rating, T_Book.publisher, T_Book.datePublished, T_Author.authorID, T_Author.name, T_Author.dob "
+        + "FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN" 
+        + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Book.title LIKE ?";
+        PreparedStatement selectTitle = con.prepareStatement(sql);
+        selectTitle.setString(1, "%" + searchTitle + "%");
             
-            ResultSet rs = selectTitle.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
-            int ccount = metaData.getColumnCount();
-            for (int c = 1; c <= ccount; c++) {
-                System.out.print(metaData.getColumnName(c) + "\t");
-            }
-            System.out.println();
+        ResultSet rs = selectTitle.executeQuery();
 
-            // Get the attribute values
-            while (rs.next()) {
-                    long isbn=rs.getLong("isbn");
-                    String title = rs.getString("title");
-                    Date date = rs.getDate("datePublished");
-                    System.out.println(isbn + title + date);
-
-                    int authorId = rs.getInt("authorId");
-                    String name = rs.getString("name");
-                    Date dob = rs.getDate("dob");
-                    Author author = new Author(authorId, name, dob);
-                    //Author author = new Author(1, "Testmannen", new Date(1994-04-19));
-                    if(result.size() > 0){
-                        if(result.get(result.size()-1).getIsbn()==isbn){    
-                            result.get(result.size()-1).addAuthor(author);
-                        }
-                        else {
-                            result.add(new Book(isbn, title, date, author));
-                        }
-                    }
-                    else {
-                        result.add(new Book(isbn, title, date, author));
-                    }
-               }
-            return result;
+        result = ConvertToBook(rs);
+                if (selectTitle != null){
+            selectTitle.close();
+        }
+                System.out.println(result.get(0).getAuthors());
+        return result;
     }
 
     @Override
@@ -150,5 +95,60 @@ public class MockBooksDb implements BooksDbInterface {
 
     @Override
     public void addBook(String isbn, String title, Genre genre, String author, Date date) {
+    }
+    
+    private Genre convertToGenre(String genre){
+        switch(genre){
+            case "fantasy": return Genre.FANTASY;
+            case "sci-fi": return Genre.SCI_FI;
+            case "crime": return Genre.CRIME;
+            case "drama": return Genre.DRAMA;
+            case "romance": return Genre.ROMANCE;
+            case "science": return Genre.SCIENCE;
+            default: throw new IllegalArgumentException();
+            
+        }
+    }
+    private Rating convertToRating(int ratingInt){
+        switch(ratingInt){
+            case 0: return Rating.NONE;
+            case 1: return Rating.ONE;
+            case 2: return Rating.TWO;
+            case 3: return Rating.THREE;
+            case 4: return Rating.FOUR;
+            case 5: return Rating.FIVE;
+            default: throw new IllegalArgumentException();
+        }
+    }
+    
+    private List<Book> ConvertToBook(ResultSet rs) throws SQLException{
+            List<Book> result = new ArrayList<>();
+            while (rs.next()) {
+            long isbn=rs.getLong("isbn");
+            String title = rs.getString("title");
+            int ratingInt = rs.getInt("Rating");
+            System.out.println(ratingInt);
+            Rating rating = convertToRating(ratingInt);
+            String genreString = rs.getString("genre");
+            Genre genre = convertToGenre(genreString);
+            Date date = rs.getDate("datePublished");
+
+            int authorId = rs.getInt("authorId");
+            String name = rs.getString("name");
+            Date dob = rs.getDate("dob");
+            Author author = new Author(authorId, name, dob);
+            if(result.size() > 0){
+                if(result.get(result.size()-1).getIsbn()==isbn){    
+                    result.get(result.size()-1).addAuthor(author);
+                }
+                else {
+                    result.add(new Book(isbn, title, date, author, genre, rating));
+                }
+            }
+            else {
+                result.add(new Book(isbn, title, date, author, genre, rating));
+            }
+        }
+        return result;
     }
 }
