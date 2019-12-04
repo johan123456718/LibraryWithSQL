@@ -1,8 +1,11 @@
-package view;
+package booksdbclient.view;
 
-import model.SearchMode;
-import model.Book;
-import model.MockBooksDb;
+import booksdbclient.model.Author;
+import booksdbclient.model.SearchMode;
+import booksdbclient.model.Book;
+import booksdbclient.model.Genre;
+import booksdbclient.model.MockBooksDb;
+import booksdbclient.model.Rating;
 import java.sql.Date;
 import java.util.List;
 import javafx.application.Platform;
@@ -104,7 +107,10 @@ public class BooksPane extends VBox {
         TableColumn<Book, String> titleCol = new TableColumn<>("Title");
         TableColumn<Book, String> isbnCol = new TableColumn<>("ISBN");
         TableColumn<Book, Date> publishedCol = new TableColumn<>("Published");
-        booksTable.getColumns().addAll(titleCol, isbnCol, publishedCol);
+        TableColumn<Book, Genre> genreCol = new TableColumn<>("Genre");
+        TableColumn<Book, Rating> ratingCol = new TableColumn<>("Rating");
+        TableColumn<Book, List<Author>> authorCol = new TableColumn<>("Authors");
+        booksTable.getColumns().addAll(titleCol, isbnCol, publishedCol, genreCol, ratingCol, authorCol);
         // give title column some extra space
         titleCol.prefWidthProperty().bind(booksTable.widthProperty().multiply(0.5));
 
@@ -113,6 +119,11 @@ public class BooksPane extends VBox {
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         isbnCol.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         publishedCol.setCellValueFactory(new PropertyValueFactory<>("published"));
+        genreCol.setCellValueFactory(new PropertyValueFactory("genre"));        
+        ratingCol.setCellValueFactory(new PropertyValueFactory("rating"));
+        authorCol.setCellValueFactory(new PropertyValueFactory("authors"));
+
+
         
         // associate the table view with the data
         booksTable.setItems(booksInTable);
