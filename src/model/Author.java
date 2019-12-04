@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package booksdbclient.model;
+
+import java.sql.Date;
 
 /**
  *
@@ -12,10 +14,12 @@ package model;
 public class Author {
     private int authorId;
     private String name;
+    private Date dob;
     
-    public Author(int authorId, String name){
+    public Author(int authorId, String name, Date date){
         this.authorId = authorId;
         this.name = name;
+        this.dob = date; 
     }
     
     public int getAuthorId(){
@@ -24,16 +28,23 @@ public class Author {
     
     public String getName(){
         return name;
-    } 
+    }
+    
+    public Date getDob(){
+        return dob;
+    }
+    
+    
     /**
      * String representation of Author.
      * @return 
      */
     @Override
     public String toString() {
-        String info = "";
-        info += "Name: " + name + ",ID: " + authorId;
-        return info;
+//        String info = "";
+//        info += "Name: " + name + ",ID: " + authorId;
+//        return info;
+        return name;
     }
 
     
