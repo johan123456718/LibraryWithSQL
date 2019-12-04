@@ -36,61 +36,26 @@ public class MockBooksDb implements BooksDbInterface {
     }
 
     @Override
-    public boolean connect(String database) throws IOException, SQLException, ClassNotFoundException {
+    public boolean connect() throws IOException, SQLException, ClassNotFoundException {
+        String database = "laboration1";
         String user = "lab1"; // user name
         String pwd = "lab123"; // password 
         System.out.println(user + ", *********");
         String server
                 = "jdbc:mysql://localhost:3306/" + database
                 + "?UseClientEnc=UTF8" + "?useTimezone=true&serverTimezone=UTC";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(server, user, pwd);
-            System.out.println("Connected!");
-        } finally {
-            try {
-                if (con == null) {
-                    con.close();
-                    System.out.println("Connection closed.");
-                }
-            } catch (SQLException e) {
-
-            }
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        con = DriverManager.getConnection(server, user, pwd);
+        System.out.println("Connected!");
+        
+        if(con == null){
+            return false;
         }
-                    
+                
         executeQuery(con, "SELECT * FROM T_Book");
         return true;
     }
     
-    public static void executeQuery(Connection con, String query) throws SQLException {
-
-        try (Statement stmt = con.createStatement()) {
-            // Execute the SQL statement
-            ResultSet rs = stmt.executeQuery(query);
-
-            // Get the attribute names
-            ResultSetMetaData metaData = rs.getMetaData();
-            int ccount = metaData.getColumnCount();
-            for (int c = 1; c <= ccount; c++) {
-                System.out.print(metaData.getColumnName(c) + "\t");
-            }
-            System.out.println();
-
-            // Get the attribute values
-            while (rs.next()) {
-                // NB! This is an example, -not- the preferred way to retrieve data.
-                // You should use methods that return a specific data type, like
-                // rs.getInt(), rs.getString() or such.
-                // It's also advisable to store each tuple (row) in an object of
-                // custom type (e.g. Employee).
-                for (int c = 1; c <= ccount; c++) {
-                    System.out.print(rs.getObject(c) + "\t");
-                }
-                System.out.println();
-            }
-
-        }
-    }
     @Override
     public void disconnect() throws IOException, SQLException {
         try {
@@ -134,8 +99,39 @@ public class MockBooksDb implements BooksDbInterface {
     }
 
     @Override
-    public void addBook(String isbn, String title, Genre genre, String author, LocalDate date) {
+    public void addBook(String isbn, String title, Genre genre, String author, Date date) {
 
+    }
+    
+    
+    public static void executeQuery(Connection con, String query) throws SQLException {
+
+        try (Statement stmt = con.createStatement()) {
+            // Execute the SQL statement
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Get the attribute names
+            ResultSetMetaData metaData = rs.getMetaData();
+            int ccount = metaData.getColumnCount();
+            for (int c = 1; c <= ccount; c++) {
+                System.out.print(metaData.getColumnName(c) + "\t");
+            }
+            System.out.println();
+
+            // Get the attribute values
+            while (rs.next()) {
+                // NB! This is an example, -not- the preferred way to retrieve data.
+                // You should use methods that return a specific data type, like
+                // rs.getInt(), rs.getString() or such.
+                // It's also advisable to store each tuple (row) in an object of
+                // custom type (e.g. Employee).
+                for (int c = 1; c <= ccount; c++) {
+                    System.out.print(rs.getObject(c) + "\t");
+                }
+                System.out.println();
+            }
+
+        }
     }
 
     private static final Book[] DATA = {

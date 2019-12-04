@@ -5,6 +5,7 @@ import model.Book;
 import model.MockBooksDb;
 import java.sql.Date;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -24,6 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
 
 /**
  * The main pane for the view, extending VBox and including the menus. An
@@ -157,16 +160,27 @@ public class BooksPane extends VBox {
         connectItem.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                controller.connect();
-                System.out.println("hej");
+                controller.connect();   
             }
+        });
+        
+        exitItem.setOnAction(new EventHandler<ActionEvent>(){
+          @Override
+          public void handle(ActionEvent event){
+              event.consume();
+              Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to close application?");
+              alert.showAndWait();
+              if(alert.getResult() == ButtonType.OK){
+                  controller.disconnect(); 
+                  Platform.exit();
+              }
+          }
         });
         
         disconnectItem.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                controller.disconnect();
-                System.out.println("då");
+                controller.disconnect();    
             }
         });
 

@@ -60,26 +60,20 @@ public class Controller {
 
     // TODO:
     // Add methods for all types of user interaction (e.g. via  menus).
-    protected void connect() {
-        try {
-            booksDb.connect("laboration1");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    protected void connect(){    
+        try{
+            booksDb.connect();
+        }catch (IOException | SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+        } 
     }
 
-    protected void disconnect() {
-        try {
+    protected void disconnect(){
+        try{
             booksDb.disconnect();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        }catch (IOException | SQLException e) {
+                    e.printStackTrace();
+        } 
     }
     
 }

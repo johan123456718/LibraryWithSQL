@@ -1,8 +1,8 @@
 package model;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public interface BooksDbInterface {
      * @throws java.sql.SQLException
      * @throws java.lang.ClassNotFoundException
      */
-    public boolean connect(String database) throws IOException, SQLException, ClassNotFoundException;
+    public boolean connect() throws IOException, SQLException, ClassNotFoundException;
     
     public void disconnect() throws IOException, SQLException;
     
@@ -35,7 +35,7 @@ public interface BooksDbInterface {
     
     public List<Book> searchBooksByGenre(Genre genre) throws IOException, SQLException;
     
-    public void addBook(String isbn, String title, Genre genre, String author, LocalDate date);
+    public void addBook(String isbn, String title, Genre genre, String author, Date date);
     // TODO: Add abstract methods for all inserts, deletes and queries 
     // mentioned in the instructions for the assignement.
 }

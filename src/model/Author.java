@@ -24,9 +24,7 @@ public class Author {
     
     public String getName(){
         return name;
-    }
-    
-    
+    } 
     /**
      * String representation of Author.
      * @return 
