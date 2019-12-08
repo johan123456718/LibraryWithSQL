@@ -19,18 +19,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A mock implementation of the BooksDBInterface interface to demonstrate how to
- * use it together with the user interface.
+ * Implements BooksDbInterface to connect to a MySQL database
  *
- * Your implementation should access a real database.
- *
- * @author anderslm@kth.se
+ * @author jlars
  */
 public class MockBooksDb implements BooksDbInterface {
 
     private Connection con;
 
     public MockBooksDb() {
+        con = null;
     }
 
     @Override
@@ -38,48 +36,48 @@ public class MockBooksDb implements BooksDbInterface {
         String database = "laboration1";
         String user = "lab1"; // user name
         String pwd = "lab123"; // password 
-        System.out.println(user + ", *********");
         String server
                 = "jdbc:mysql://localhost:3306/" + database
                 + "?UseClientEnc=UTF8" + "?useTimezone=true&serverTimezone=UTC";
         Class.forName("com.mysql.cj.jdbc.Driver");
         con = DriverManager.getConnection(server, user, pwd);
-        getAllBooks();
-        //ska den stängas????            
         return true;
     }
 
     @Override
-    public void disconnect() throws IOException, SQLException {
-        try {
-            if (con != null) {
-                con.close();
-                System.out.println("Connection closed.");
-            }
-        } catch (SQLException e) {
+    public void disconnect() throws IOException, SQLException{
+        if (con != null) {
+            con.close();
         }
     }
 
     @Override
-    public List<Book> searchBooksByTitle(String searchTitle)
-            throws IOException, SQLException {
+    public List<Book> searchBooksByTitle(String searchTitle) throws IOException, SQLException {
         List<Book> result = new ArrayList<>();
         String sql = "SELECT T_book.isbn, T_Book.title, T_Book.genre, T_Book.rating, T_Book.publisher, T_Book.datePublished, T_Author.authorID, T_Author.name, T_Author.dob "
                 + "FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN"
                 + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Book.title LIKE ? ORDER BY T_Book.isbn ASC";
-        PreparedStatement selectTitle = con.prepareStatement(sql);
-        selectTitle.setString(1, "%" + searchTitle + "%");
-
-        ResultSet rs = selectTitle.executeQuery();
-
-        result = ConvertToBook(rs);
-        if (selectTitle != null) {
-            selectTitle.close();
+        PreparedStatement selectTitle = null;
+        ResultSet rs = null;
+        try{
+            selectTitle = con.prepareStatement(sql);
+            selectTitle.setString(1, "%" + searchTitle + "%");
+            
+            rs = selectTitle.executeQuery();
+            result = ConvertToBook(rs);
+            return result;
         }
-        System.out.println(result.get(0).getAuthors());
-        return result;
+        finally{
+            if (selectTitle != null) {
+                selectTitle.close();
+                
+            }
+            if(rs != null){
+                rs.close();
+            }
+        }
     }
-
+    
     @Override
     public List<Book> searchBooksByRating(Rating rating) throws IOException, SQLException {
         return null;
@@ -91,17 +89,23 @@ public class MockBooksDb implements BooksDbInterface {
         String sql = "SELECT T_book.isbn, T_Book.title, T_Book.genre, T_Book.rating, T_Book.publisher, T_Book.datePublished, T_Author.authorID, T_Author.name, T_Author.dob "
                 + "FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN"
                 + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Book.isbn LIKE ? ORDER BY T_Book.isbn ASC";
-        PreparedStatement selectTitle = con.prepareStatement(sql);
-        selectTitle.setString(1, "%" + isbn + "%");
-
-        ResultSet rs = selectTitle.executeQuery();
-
-        result = ConvertToBook(rs);
-        if (selectTitle != null) {
-            selectTitle.close();
+        PreparedStatement selectIsbn = null;
+        ResultSet rs = null;
+        try{
+            selectIsbn = con.prepareStatement(sql);
+            selectIsbn.setString(1, "%" + isbn + "%");
+            rs = selectIsbn.executeQuery();
+            result = ConvertToBook(rs);
+            return result;
         }
-        System.out.println(result.get(0).getAuthors());
-        return result;
+        finally{
+            if (selectIsbn != null) {
+            selectIsbn.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+        }
     }
 
     @Override
@@ -110,19 +114,23 @@ public class MockBooksDb implements BooksDbInterface {
         String sql = "SELECT T_book.isbn, T_Book.title, T_Book.genre, T_Book.rating, T_Book.publisher, T_Book.datePublished, T_Author.authorID, T_Author.name, T_Author.dob"
                 + " FROM T_Book JOIN WrittenBy ON T_Book.isbn = WrittenBy.isbn JOIN"
                 + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Author.name LIKE ? ORDER BY T_Book.isbn ASC";
-
-        PreparedStatement selectTitle = con.prepareStatement(sql);
-        selectTitle.setString(1, "%" + author + "%");
-
-        ResultSet rs = selectTitle.executeQuery();
-
-        result = ConvertToBook(rs);
-        if (selectTitle != null) {
-            selectTitle.close();
+        PreparedStatement selectAuthor = null;
+        ResultSet rs = null;
+        try{
+            selectAuthor = con.prepareStatement(sql);
+            selectAuthor.setString(1, "%" + author + "%");
+            rs = selectAuthor.executeQuery();
+            result = ConvertToBook(rs);
+            return result;
         }
-        System.out.println(result.get(0).getAuthors());
-        return result;
-
+        finally{
+            if (selectAuthor != null) {
+                selectAuthor.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+        }
     }
 
     @Override
@@ -131,31 +139,103 @@ public class MockBooksDb implements BooksDbInterface {
         String sql = "SELECT * "
                 + "FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN"
                 + " T_Author ON T_Author.authorID = Writtenby.authorID ORDER BY T_Book.isbn ASC";
-        PreparedStatement selectTitle = con.prepareStatement(sql);
-       
-        ResultSet rs = selectTitle.executeQuery();
-
-        result = ConvertToBook(rs);
-
-        if (selectTitle != null) {
-            selectTitle.close();
+        PreparedStatement selectAll = null;
+        ResultSet rs = null;
+        try{
+            selectAll = con.prepareStatement(sql);
+            rs = selectAll.executeQuery();
+            result = ConvertToBook(rs);
+            return result;
         }
-        System.out.println(result.get(0).getAuthors());
-        System.out.println(result.get(1).getAuthors()); // Test
-        return result;
+        finally{
+            if (selectAll != null) {
+                selectAll.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+        }
     }
 
     @Override
-    public void addBook(String isbn, String title, Genre genre, String author, Date date) throws IOException, SQLException {
-        String sql = "INSERT INTO T_Book(isbn, title, genre, publisher, datePublished) VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement selectTitle = con.prepareStatement(sql);
-        selectTitle.setString(1, isbn);
-        selectTitle.setString(2, title);
-        selectTitle.setString(3, "crime");
-        selectTitle.setString(4, "THE BOIIS");
-        selectTitle.setDate(5, date);
-        selectTitle.execute();
-        
+    public void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException {
+        PreparedStatement getAllAuthors = null;
+        PreparedStatement insertBook = null;
+        PreparedStatement insertAuthor = null;
+        PreparedStatement insertWrittenBy = null; 
+        ResultSet rs = null;
+        try{
+            con.setAutoCommit(false);
+            String authorName = "Jeppe";
+            String authorId = "1";
+            String dob = "1994-04-19";
+            String sql = "SELECT * FROM T_Author ORDER BY AuthorId ASC;";
+            getAllAuthors = con.prepareStatement(sql);
+            rs = getAllAuthors.executeQuery();
+            boolean authorExists = false;
+            int idIndex = 0;
+            while (rs.next()){
+                idIndex = rs.getInt("authorId");
+                if(authorId.equals(String.valueOf(idIndex))){
+                    //check for existing Id and verify all attributes for consistency
+                    if(dob.equals(rs.getString("dob")) && authorName.equals(rs.getString("name"))){
+                        authorExists = true;
+                        break;
+                    }
+                    else{
+                        throw new IllegalArgumentException();
+                    }
+                }
+            }
+            sql = "INSERT INTO T_Book(isbn, title, genre, publisher, datePublished) VALUES(?, ?, ?, ?, ?)";
+            insertBook = con.prepareStatement(sql);
+            insertBook.setString(1, isbn);
+            insertBook.setString(2, title);
+            insertBook.setString(3, "crime");
+            insertBook.setString(4, "THE BOIIS");
+            insertBook.setString(5, pDate);
+            insertBook.execute();
+            
+            sql = "INSERT INTO WrittenBy(isbn, authorID) VALUES(?, ?)";
+            insertWrittenBy = con.prepareStatement(sql);
+            insertWrittenBy.setString(1, isbn);
+            if(!authorExists){
+                insertWrittenBy.setInt(2, idIndex+1);
+                sql = "INSERT INTO T_Author(name, dob, authorId) VALUES(?, ?, ?)";
+                insertAuthor = con.prepareStatement(sql);
+                insertAuthor.setString(1, authorName);
+                insertAuthor.setString(2, dob);
+                insertAuthor.setInt(3, idIndex+1);
+                insertAuthor.execute();
+            }
+            else{
+                insertWrittenBy.setString(2, authorId);
+            }
+            insertWrittenBy.execute();
+            con.commit();
+        }
+        catch(Exception e){
+            con.rollback();
+            throw e;
+        }
+        finally{
+            if(getAllAuthors != null){
+                getAllAuthors.close();
+            }
+            if(insertAuthor != null){
+               insertAuthor.close();
+            }
+            if(insertBook != null){
+                insertBook.close();
+            }
+            if(insertWrittenBy != null){
+               insertWrittenBy.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+            con.setAutoCommit(true);
+        }
     }
 
     private Genre convertToGenre(String genre) {
@@ -213,13 +293,14 @@ public class MockBooksDb implements BooksDbInterface {
             String name = rs.getString("name");
             Date dob = rs.getDate("dob");
             Author author = new Author(authorId, name, dob);
+            boolean bookExists = false;
             if (result.size() > 0) {
                 if (result.get(result.size() - 1).getIsbn() == isbn) {
                     result.get(result.size() - 1).addAuthor(author);
-                } else {
-                    result.add(new Book(isbn, title, date, author, genre, rating));
+                    bookExists = true;
                 }
-            } else {
+            }
+            if(!bookExists){
                 result.add(new Book(isbn, title, date, author, genre, rating));
             }
         }
