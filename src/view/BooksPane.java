@@ -23,7 +23,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -32,6 +34,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -208,12 +211,10 @@ public class BooksPane extends VBox {
         addItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                try {
+                try { 
                     addBookInit(controller);
-                } catch (IOException ex) {
-                    Logger.getLogger(BooksPane.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(BooksPane.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException  | SQLException e) {
+                        e.printStackTrace();
                 }
             }
         });
@@ -238,31 +239,68 @@ public class BooksPane extends VBox {
 		dialog.setTitle("Add book");
                 GridPane addBookPane = new GridPane();
                 ArrayList<TextField> contextTextField = new ArrayList<>();
-                addBookTable(dialog, addBookPane, contextTextField);
+
+                ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList("fantasy", "sci-fi", "crime", "drama", "romance", "science")
+                );
+                choiceBox.setTooltip(new Tooltip("Select genre"));
+                
+                DatePicker publishDate = new DatePicker();
+                
+                DatePicker birthDate = new DatePicker();
+                
+                addBookTable(dialog, addBookPane, contextTextField, choiceBox, publishDate, birthDate);
                 dialog.getDialogPane().setContent(addBookPane);  
                 dialog.showAndWait();
 		dialog.setResizable(true);
+                
                 if(button.getButtonData()== ButtonData.OK_DONE){
                     String isbn = contextTextField.get(0).getText();
                     String title = contextTextField.get(1).getText();
-                    String genre = contextTextField.get(2).getText();
-                    String date = contextTextField.get(3).getText();
-                    controller.addBook(isbn, title, genre, date);
+                    
+                    String authorId = contextTextField.get(3).getText();
+                    String publisher = contextTextField.get(4).getText();
+                    String genre = null;
+                    if(choiceBox.getValue() != null){
+                        genre = choiceBox.getValue().toString();
+                    }
+                    String pDate = null;
+                    if(publishDate.getValue() != null){
+                        pDate = publishDate.getValue().toString();
+                    }
+                    String bDate = null;
+                    if(birthDate.getValue() != null){
+                        bDate = birthDate.getValue().toString();
+                    }  
+                    controller.addBook(isbn, title, genre, publisher, pDate);
                 }
         }
         
-        private void addBookTable(Dialog dialog, GridPane addBookPane, ArrayList<TextField> contextTextField){
+        private void addBookTable(Dialog dialog, GridPane addBookPane, ArrayList<TextField> contextTextField, ChoiceBox choiceBox, DatePicker publishDate,
+                DatePicker birthDate){
                 ArrayList<Label> context = new ArrayList<>();
                 context.add(new Label("ISBN"));
                 context.add(new Label("Title"));
-                //context.add(new Label("Author"));
+                context.add(new Label("Author"));
+                context.add(new Label("AuthorId"));
+                context.add(new Label("Publisher"));
                 context.add(new Label("Genre"));
-                context.add(new Label("Date"));
+                context.add(new Label("Birth date"));
+                context.add(new Label("Publish Date"));
                              
                 for(int i = 0; i < context.size(); i++){
-                    contextTextField.add(new TextField());
                     addBookPane.add(context.get(i), 0, i);
-                    addBookPane.add(contextTextField.get(i), 1, i);
                 }           
+                
+                for(int i = 0; i < 5; i++){
+                    contextTextField.add(new TextField());
+                    addBookPane.add(contextTextField.get(i), 1, i);
+                }
+                
+                addBookPane.add(choiceBox,1,5);
+                
+                addBookPane.add(birthDate,1,6);
+                addBookPane.add(publishDate, 1, 7);
+                
+                
         }
 }
