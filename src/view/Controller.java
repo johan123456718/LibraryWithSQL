@@ -69,7 +69,7 @@ public class Controller {
             booksDb.connect();
             booksView.displayBooks(booksDb.getAllBooks());
         }catch (IOException | SQLException | ClassNotFoundException e) {
-                    e.printStackTrace();
+            booksView.showAlertAndWait("Could not connect to database.", ERROR);
         } 
     }
 
@@ -84,14 +84,27 @@ public class Controller {
     protected void getAllBooks(){
         try {
             booksView.displayBooks(booksDb.getAllBooks());
-        } catch (IOException | SQLException e) {
+        }
+        catch (IOException | SQLException e) {
                 e.printStackTrace();
         } 
     }
     
-    protected void addBook(String isbn, String title, String genre, String date) throws IOException, SQLException{
-        booksDb.addBook(isbn, title, Genre.CRIME, "Pelle", Date.valueOf("2007-11-22"));
-        System.out.println(Date.valueOf("2007-11-22"));
+    protected void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException{
+        
+        try{
+            booksDb.addBook(isbn, title, genre, publisher, pDate);
+            System.out.println(Date.valueOf("2007-11-22"));
+        }
+        catch (IllegalArgumentException e){
+            booksView.showAlertAndWait("Author has been removed or updated. Please try again.", ERROR);
+        }
+        catch (IOException | SQLException e){
+            booksView.showAlertAndWait("Invalid data entered. Please try again.", ERROR);
+        }
+        catch(NullPointerException e){
+            booksView.showAlertAndWait("Not connected to database. Connect and try again.", ERROR);
+        }
     }
     
 }
