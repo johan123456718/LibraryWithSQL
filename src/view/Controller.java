@@ -45,6 +45,9 @@ public class Controller {
                     case Author:
                         result = booksDb.searchBooksByAuthor(searchFor);
                         break;
+                    case Genre:
+                        result = booksDb.searchBooksByGenre(searchFor);
+                        break;
                     default:
                 }
                 if (result == null || result.isEmpty()) {
@@ -90,9 +93,39 @@ public class Controller {
         } 
     }
     
-    protected void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException{
+    protected void addBookSelected() throws SQLException, IOException{
+        try {
+            booksView.showAddBookDialog(this, booksDb.getAllAuthors());
+        }
+        catch (Exception e){
+            booksView.showAlertAndWait("Not connected to database. Connect and try again.", ERROR);
+        }
+    }
+    
         
+    protected void addRatingSelected(){
+        try {
+            booksView.displayBooks(booksDb.getAllBooks());
+            booksView.showAddRatingDialog(this);
+        }
+        catch (Exception e){
+            booksView.showAlertAndWait("Not connected to database. Connect and try again.", ERROR);
+        }
+    }
+    
+    protected void updateRating(String isbn, String rating){
         try{
+            booksView.displayBooks(booksDb.getAllBooks());
+            booksDb.updateRating(isbn, rating);
+            booksView.displayBooks(booksDb.getAllBooks());
+        }catch (IOException | SQLException e) {
+                e.printStackTrace();
+        } 
+    }
+    
+    protected void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException{
+        try{
+            System.out.println(booksDb.getAllAuthors());
             booksDb.addBook(isbn, title, genre, publisher, pDate);
             System.out.println(Date.valueOf("2007-11-22"));
         }
@@ -105,6 +138,5 @@ public class Controller {
         catch(NullPointerException e){
             booksView.showAlertAndWait("Not connected to database. Connect and try again.", ERROR);
         }
-    }
-    
+    }  
 }

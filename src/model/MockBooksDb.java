@@ -79,8 +79,28 @@ public class MockBooksDb implements BooksDbInterface {
     }
     
     @Override
-    public List<Book> searchBooksByRating(Rating rating) throws IOException, SQLException {
-        return null;
+    public List<Book> searchBooksByGenre(String genre) throws IOException, SQLException{
+        List<Book> result = new ArrayList<>();
+        String sql = "SELECT T_book.isbn, T_Book.title, T_Book.genre, T_Book.rating, T_Book.publisher, T_Book.datePublished, T_Author.authorID, T_Author.name, T_Author.dob "
+                + "FROM T_Book JOIN Writtenby ON T_Book.isbn = Writtenby.isbn JOIN"
+                + " T_Author ON T_Author.authorID = Writtenby.authorID WHERE T_Book.genre LIKE ? ORDER BY T_Book.isbn ASC";
+        PreparedStatement selectGenre = null;
+        ResultSet rs = null;
+        try{
+            selectGenre = con.prepareStatement(sql);
+            selectGenre.setString(1, "%" + genre.toString() + "%");
+            rs = selectGenre.executeQuery();
+            result = ConvertToBook(rs);
+            return result;
+        }
+        finally{
+            if (selectGenre != null) {
+            selectGenre.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+        }
     }
 
     @Override
@@ -129,6 +149,25 @@ public class MockBooksDb implements BooksDbInterface {
             }
             if(rs != null){
                 rs.close();
+            }
+        }
+    }
+    
+        @Override
+    public void updateRating(String isbn, String rating) throws IOException, SQLException {
+        List<Book> result = new ArrayList<>();
+        String sql = "UPDATE T_Book "
+                + "SET T_Book.rating = ? WHERE T_Book.isbn = ? ORDER BY T_Book.isbn ASC";
+        PreparedStatement ratingUpdate = null;
+        try{
+            ratingUpdate = con.prepareStatement(sql);
+            ratingUpdate.setString(1, rating );
+            ratingUpdate.setString(2, isbn);
+            ratingUpdate.execute();
+        }
+        finally{
+            if (ratingUpdate != null) {
+                ratingUpdate.close();
             }
         }
     }
@@ -288,11 +327,7 @@ public class MockBooksDb implements BooksDbInterface {
             String genreString = rs.getString("genre");
             Genre genre = convertToGenre(genreString);
             Date date = rs.getDate("datePublished");
-
-            int authorId = rs.getInt("authorId");
-            String name = rs.getString("name");
-            Date dob = rs.getDate("dob");
-            Author author = new Author(authorId, name, dob);
+            Author author = ConvertToAuthor(rs);
             boolean bookExists = false;
             if (result.size() > 0) {
                 if (result.get(result.size() - 1).getIsbn() == isbn) {
@@ -305,5 +340,37 @@ public class MockBooksDb implements BooksDbInterface {
             }
         }
         return result;
+    }
+    
+    @Override
+    public List<Author> getAllAuthors() throws SQLException {
+        List<Author> allAuthors = new ArrayList();
+        ResultSet rs = null;
+        PreparedStatement getAllAuthors = null;
+        String sql = "SELECT * FROM T_Author ORDER BY AuthorId ASC;";
+        try{
+            getAllAuthors = con.prepareStatement(sql);
+            rs = getAllAuthors.executeQuery();  
+            while(rs.next()){
+                allAuthors.add(ConvertToAuthor(rs));
+            }
+            return allAuthors;
+        }
+        finally {
+            if(getAllAuthors != null){
+                getAllAuthors.close();
+            }
+            if(rs != null){
+                rs.close();
+            }         
+        }
+    }
+    
+    private Author ConvertToAuthor(ResultSet rs) throws SQLException {
+            int authorId = rs.getInt("authorId");
+            String name = rs.getString("name");
+            Date dob = rs.getDate("dob");
+            Author author = new Author(authorId, name, dob);
+            return author;    
     }
 }

@@ -1,4 +1,4 @@
-package booksdbclient.model;
+package model;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -61,4 +61,3 @@ public class Book {
         return title + ", " + isbn + ", " + published.toString();
     }
 }
-
