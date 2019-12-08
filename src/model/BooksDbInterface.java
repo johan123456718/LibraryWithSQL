@@ -40,7 +40,7 @@ public interface BooksDbInterface {
     
     public List<Book> getAllBooks() throws SQLException, IOException;
     
-    public void addBook(String isbn, String title, Genre genre, String author, Date date) throws IOException, SQLException;
+    public void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException;
     
     // TODO: Add abstract methods for all inserts, deletes and queries 
     // mentioned in the instructions for the assignement.
