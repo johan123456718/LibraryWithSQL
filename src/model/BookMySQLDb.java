@@ -32,7 +32,14 @@ public class BookMySQLDb implements BooksDbInterface {
     public BookMySQLDb() {
         con = null;
     }
-
+    
+    /**
+     * Connect to the database.
+     * @return true on successful connection.
+     * @throws java.io.IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
+     */
     @Override
     public boolean connect() throws IOException, SQLException, ClassNotFoundException {
         String database = "laboration1";
@@ -45,7 +52,12 @@ public class BookMySQLDb implements BooksDbInterface {
         con = DriverManager.getConnection(server, user, pwd);
         return true;
     }
-
+    
+    /**
+     * Disconnects from database if connection is active
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public void disconnect() throws IOException, SQLException{
         if (con != null) {
@@ -53,6 +65,13 @@ public class BookMySQLDb implements BooksDbInterface {
         }
     }
 
+    /**
+     * Returns all books from database where the title contains given string
+     * @param title
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public List<Book> searchBooksByTitle(String searchTitle) throws IOException, SQLException {
         List<Book> result = new ArrayList<>();
@@ -80,6 +99,13 @@ public class BookMySQLDb implements BooksDbInterface {
         }
     }
     
+    /**
+     * Returns all books from database where the genre matches given string
+     * @param genre
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public List<Book> searchBooksByGenre(String genre) throws IOException, SQLException{
         List<Book> result = new ArrayList<>();
@@ -104,7 +130,14 @@ public class BookMySQLDb implements BooksDbInterface {
             }
         }
     }
-
+    
+    /**
+     * Returns all books from database where the ISBN contains given string
+     * @param isbn
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public List<Book> searchBooksByIsbn(String isbn) throws IOException, SQLException {
         List<Book> result = new ArrayList<>();
@@ -130,6 +163,13 @@ public class BookMySQLDb implements BooksDbInterface {
         }
     }
 
+    /**
+     * Returns all books from database where the author name contains given string
+     * @param author
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */  
     @Override
     public List<Book> searchBooksByAuthor(String author) throws IOException, SQLException {
         List<Book> result = new ArrayList<>();
@@ -154,7 +194,14 @@ public class BookMySQLDb implements BooksDbInterface {
             }
         }
     }
-    
+   
+    /**
+     * Returns all books from database where the rating matches given string
+     * @param rating
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public List<Book> searchBooksByRating(String rating) throws IOException, SQLException{
         
@@ -182,6 +229,14 @@ public class BookMySQLDb implements BooksDbInterface {
         }
     }
     
+    /**
+     * sets a given rating for a given book
+     * @param isbn
+     * @param rating
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public boolean updateRating(String isbn, String rating) throws IOException, SQLException {
         List<Book> result = new ArrayList<>();
@@ -200,6 +255,16 @@ public class BookMySQLDb implements BooksDbInterface {
             }
         }
     }
+    
+    /**
+     * adds existing author, or creates a new author, and adds it to given book
+     * @param isbn
+     * @param authorName
+     * @param authorId
+     * @param bDate
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public void addAuthorToBook(String isbn, String authorName, String authorId, String bDate) throws IOException, SQLException{
         PreparedStatement getAllAuthors = null;
@@ -267,6 +332,13 @@ public class BookMySQLDb implements BooksDbInterface {
             con.setAutoCommit(true);
         }
     }
+    
+    /**
+     * returns all books in database
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
     @Override
     public List<Book> getAllBooks() throws IOException, SQLException{
         List<Book> result = new ArrayList<>();
@@ -291,6 +363,19 @@ public class BookMySQLDb implements BooksDbInterface {
         }
     }
 
+    /**
+     * creates a new book and connects it to an existing or new author
+     * @param isbn
+     * @param title
+     * @param genre
+     * @param publisher
+     * @param pDate
+     * @param authorName
+     * @param authorId
+     * @param bDate
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public void addBook(String isbn, String title, String genre, String publisher, String pDate, String authorName, String authorId, String bDate) throws IOException, SQLException {
         PreparedStatement getAllAuthors = null;
@@ -435,6 +520,11 @@ public class BookMySQLDb implements BooksDbInterface {
         return result;
     }
     
+    /**
+     * returns all authors in database
+     * @return
+     * @throws SQLException
+     */
     @Override
     public List<Author> getAllAuthors() throws SQLException {
         List<Author> allAuthors = new ArrayList();
