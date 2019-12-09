@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Representation of a book.
  * 
- * @author anderslm@kth.se
+ * @author anderslm@kth.se, Johan Challita, challita@kth.se, Jesper Larssoon, jespelar@kth.se
  */
 public class Book {
     
@@ -22,7 +22,7 @@ public class Book {
     // as well, i.e. "private ArrayList<Author> authors;"
     
     /**
-     *
+     * Constructor with arguments to create a book
      * @param isbn
      * @param title
      * @param published
@@ -41,7 +41,7 @@ public class Book {
     }
     
     /**
-     *
+     * Returns book ISBN
      * @return
      */
     public long getIsbn() { 
@@ -49,7 +49,7 @@ public class Book {
     }
 
     /**
-     *
+     * Returns book title
      * @return
      */
     public String getTitle() { 
@@ -57,7 +57,7 @@ public class Book {
     }
 
     /**
-     *
+     * returns the date when it was published
      * @return
      */
     public Date getPublished() { 
@@ -65,7 +65,7 @@ public class Book {
     }
 
     /**
-     *
+     * return the genre of the book
      * @return
      */
     public Genre getGenre(){
@@ -73,7 +73,7 @@ public class Book {
     }
 
     /**
-     *
+     * returns the book's rating
      * @return
      */
     public Rating getRating(){
@@ -81,7 +81,7 @@ public class Book {
     }
     
     /**
-     *
+     * returns the list of authors
      * @return
      */
     public List<Author> getAuthors(){
@@ -89,7 +89,7 @@ public class Book {
     }
     
     /**
-     *
+     *  Adding an author to a book
      * @param author
      */
     public void addAuthor(Author author){
@@ -97,7 +97,7 @@ public class Book {
     }
     
     /**
-     *
+     * returns a string of the object's initialization
      * @return
      */
     @Override
