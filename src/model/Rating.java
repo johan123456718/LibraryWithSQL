@@ -7,8 +7,8 @@
 package model;
 
 /**
- *
- * @author Johan C
+ * This enum represents the book's rating.
+ * @author Johan Challita, challita@kth.se, Jesper Larsson, jespelar@kth.se
  */
 public enum Rating {
     NONE, ONE, TWO, THREE, FOUR, FIVE
