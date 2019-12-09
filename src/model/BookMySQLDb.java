@@ -18,14 +18,16 @@ import java.util.List;
 /**
  * Implements BooksDbInterface to connect to a MySQL database
  *
- * @author jlars
+ * @author anderslm@kth.se
+ * @author jespelar@kth.se
+ * @author challita@kth.se
  */
 public class BookMySQLDb implements BooksDbInterface {
 
     private Connection con;
 
     /**
-     *
+     *creates an instance of the database
      */
     public BookMySQLDb() {
         con = null;
