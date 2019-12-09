@@ -1,7 +1,6 @@
 package model;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,7 +16,6 @@ public interface BooksDbInterface {
     
     /**
      * Connect to the database.
-     * @param database
      * @return true on successful connection.
      * @throws java.io.IOException
      * @throws java.sql.SQLException
@@ -33,17 +31,17 @@ public interface BooksDbInterface {
     
     public List<Book> searchBooksByIsbn(String isbn) throws IOException, SQLException;
                    
-     public List<Book> searchBooksByGenre(String genre) throws IOException, SQLException;
+    public List<Book> searchBooksByGenre(String genre) throws IOException, SQLException;
     
-    public void updateRating(String isbn, String rating) throws IOException, SQLException;
+    public List<Book> searchBooksByRating(String rating) throws IOException, SQLException;
     
+    public boolean updateRating(String isbn, String rating) throws IOException, SQLException;
+   
+    public void addAuthorToBook(String isbn, String authorName, String authorId, String bDate) throws IOException, SQLException;
     
     public List<Book> getAllBooks() throws SQLException, IOException;
     
-    public void addBook(String isbn, String title, String genre, String publisher, String pDate) throws IOException, SQLException;
+    public void addBook(String isbn, String title, String genre, String publisher, String pDate, String authorName, String authorId, String bDate) throws IOException, SQLException;
     
     public List<Author> getAllAuthors() throws SQLException;
-    
-    // TODO: Add abstract methods for all inserts, deletes and queries 
-    // mentioned in the instructions for the assignement.
 }

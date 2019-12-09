@@ -12,9 +12,9 @@ import java.sql.Date;
  * @author Johan C
  */
 public class Author {
-    private int authorId;
-    private String name;
-    private Date dob;
+    private final int authorId;
+    private final String name;
+    private final Date dob;
     
     public Author(int authorId, String name, Date date){
         this.authorId = authorId;
@@ -41,9 +41,6 @@ public class Author {
      */
     @Override
     public String toString() {
-//        String info = "";
-//        info += "Name: " + name + ",ID: " + authorId;
-//        return info;
         return name;
     }
 

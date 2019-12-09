@@ -12,12 +12,11 @@ import java.util.List;
 public class Book {
     
     private long isbn; // should check format
-    private String title;
-    private Date published;
-    private String storyLine = "";
-    private Genre genre;
-    private Rating rating;
-    private List<Author> authors;
+    private final String title;
+    private final Date published;
+    private final Genre genre;
+    private final Rating rating;
+    private final List<Author> authors;
     // TODO: 
     // Add authors, and corresponding methods, to your implementation 
     // as well, i.e. "private ArrayList<Author> authors;"
@@ -32,10 +31,15 @@ public class Book {
         this.rating = rating;
     }
     
-    public long getIsbn() { return isbn; }
-    public String getTitle() { return title; }
-    public Date getPublished() { return published; }
-    public String getStoryLine() { return storyLine; }
+    public long getIsbn() { 
+        return isbn; 
+    }
+    public String getTitle() { 
+        return title; 
+    }
+    public Date getPublished() { 
+        return published; 
+    }
     public Genre getGenre(){
         return this.genre;
     }
@@ -44,16 +48,11 @@ public class Book {
     }
     
     public List<Author> getAuthors(){
-        //needs deep copy?
         return this.authors;
     }
     
     public void addAuthor(Author author){
         this.authors.add(author);
-    }
-    
-    public void setStoryLine(String storyLine) {
-        this.storyLine = storyLine;
     }
     
     @Override

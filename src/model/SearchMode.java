@@ -1,5 +1,5 @@
 package model;
 
 public enum SearchMode {
-    Title, ISBN, Author, Genre
+    Title, ISBN, Author
 }
