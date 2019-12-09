@@ -110,8 +110,8 @@ public class BooksPane extends VBox {
         initBooksTable();
         initSearchView(controller);
         initMenus(controller);
-        addBookInit(controller);
-        addRatingInit(controller);
+        addBookInit();
+        addRatingInit();
         addAuthorInit();
         searchRatingInit();
         searchGenreInit();
@@ -300,7 +300,7 @@ public class BooksPane extends VBox {
     
     
             
-        private void addBookInit(Controller controller){
+        private void addBookInit(){
                 addBookDialog = new Dialog();
                 ButtonType button = new ButtonType("Create", ButtonData.OK_DONE);
 
@@ -549,7 +549,7 @@ public class BooksPane extends VBox {
                 addBookPane.add(publishDate, 1, 7);
                 addBookPane.add(authorTable, 1, 8);       
         }
-        private void addRatingInit(Controller controller){
+        private void addRatingInit(){
            addRatingDialog = new Dialog();
            ButtonType button = new ButtonType("Send", ButtonData.OK_DONE);
            addRatingDialog.getDialogPane().getButtonTypes().add(button);
