@@ -8,8 +8,8 @@ package model;
 import java.sql.Date;
 
 /**
- *
- * @author Johan C
+ * This class represents an author to a book
+ * @author Johan Challita, challita@kth.se, Jesper Larsson, jespelar@kth.se
  */
 public class Author {
     private final int authorId;
@@ -17,7 +17,7 @@ public class Author {
     private final Date dob;
     
     /**
-     *
+     *  Constructor with arguments to an author
      * @param authorId
      * @param name
      * @param date
@@ -29,7 +29,7 @@ public class Author {
     }
     
     /**
-     *
+     *  returns AuthorID
      * @return
      */
     public int getAuthorId(){
@@ -37,7 +37,7 @@ public class Author {
     }
     
     /**
-     *
+     *  returns author's name
      * @return
      */
     public String getName(){
@@ -45,7 +45,7 @@ public class Author {
     }
     
     /**
-     *
+     *  returns author's birth day
      * @return
      */
     public Date getDob(){
