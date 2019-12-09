@@ -17,9 +17,6 @@ public class Book {
     private final Genre genre;
     private final Rating rating;
     private final List<Author> authors;
-    // TODO: 
-    // Add authors, and corresponding methods, to your implementation 
-    // as well, i.e. "private ArrayList<Author> authors;"
     
     /**
      * Constructor with arguments to create a book
