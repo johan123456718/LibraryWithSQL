@@ -6,8 +6,8 @@
 package model;
 
 /**
- *
- * @author Johan C
+ * This enum represents the book's genre
+ * @author Johan C, challita@kth.se Jesper Larsson, jespelar@kth.se
  */
 public enum Genre {
     FANTASY, SCI_FI, CRIME, DRAMA, ROMANCE, SCIENCE
