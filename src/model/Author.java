@@ -16,20 +16,38 @@ public class Author {
     private final String name;
     private final Date dob;
     
+    /**
+     *
+     * @param authorId
+     * @param name
+     * @param date
+     */
     public Author(int authorId, String name, Date date){
         this.authorId = authorId;
         this.name = name;
         this.dob = date; 
     }
     
+    /**
+     *
+     * @return
+     */
     public int getAuthorId(){
         return authorId;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getName(){
         return name;
     }
     
+    /**
+     *
+     * @return
+     */
     public Date getDob(){
         return dob;
     }

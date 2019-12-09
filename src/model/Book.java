@@ -21,6 +21,15 @@ public class Book {
     // Add authors, and corresponding methods, to your implementation 
     // as well, i.e. "private ArrayList<Author> authors;"
     
+    /**
+     *
+     * @param isbn
+     * @param title
+     * @param published
+     * @param author
+     * @param genre
+     * @param rating
+     */
     public Book(long isbn, String title, Date published, Author author, Genre genre, Rating rating) {
         this.isbn = isbn;
         this.title = title;
@@ -31,30 +40,66 @@ public class Book {
         this.rating = rating;
     }
     
+    /**
+     *
+     * @return
+     */
     public long getIsbn() { 
         return isbn; 
     }
+
+    /**
+     *
+     * @return
+     */
     public String getTitle() { 
         return title; 
     }
+
+    /**
+     *
+     * @return
+     */
     public Date getPublished() { 
         return published; 
     }
+
+    /**
+     *
+     * @return
+     */
     public Genre getGenre(){
         return this.genre;
     }
+
+    /**
+     *
+     * @return
+     */
     public Rating getRating(){
         return this.rating;
     }
     
+    /**
+     *
+     * @return
+     */
     public List<Author> getAuthors(){
         return this.authors;
     }
     
+    /**
+     *
+     * @param author
+     */
     public void addAuthor(Author author){
         this.authors.add(author);
     }
     
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return title + ", " + isbn + ", " + published.toString();

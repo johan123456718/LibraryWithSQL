@@ -22,11 +22,21 @@ public class Controller {
     private final BooksPane booksView; // view
     private final BooksDbInterface booksDb; // model
 
+    /**
+     *
+     * @param booksDb
+     * @param booksView
+     */
     public Controller(BooksDbInterface booksDb, BooksPane booksView) {
         this.booksDb = booksDb;
         this.booksView = booksView;
     }
 
+    /**
+     *
+     * @param searchFor
+     * @param mode
+     */
     protected void onSearchSelected(String searchFor, SearchMode mode) {
         new Thread(){
             @Override
@@ -91,6 +101,9 @@ public class Controller {
         }.start();
     }
 
+    /**
+     *
+     */
     protected void connect(){    
         new Thread(){
             @Override
@@ -118,6 +131,9 @@ public class Controller {
         }.start();
     }
 
+    /**
+     *
+     */
     protected void disconnect(){
         new Thread(){
             @Override
@@ -131,6 +147,9 @@ public class Controller {
         }.start();
     }
     
+    /**
+     *
+     */
     protected void getAllBooks(){
         new Thread(){
             public void run(){
@@ -157,6 +176,9 @@ public class Controller {
         }.start();
     }
     
+    /**
+     *
+     */
     protected void addBookSelected(){
         new Thread(){
             @Override
@@ -212,6 +234,9 @@ public class Controller {
         }.start();
     }
     
+    /**
+     *
+     */
     protected void searchRatingSelected(){
         try{
             String searchResult = booksView.showSearchRatingDialog();
@@ -251,6 +276,9 @@ public class Controller {
         }
     }
     
+    /**
+     *
+     */
     protected void searchGenreSelected(){
         try{
             String searchResult = booksView.showSearchGenreDialog(); 
@@ -290,6 +318,9 @@ public class Controller {
         }
     }
          
+    /**
+     *
+     */
     protected void addRatingSelected(){
         new Thread(){
         @Override
@@ -344,6 +375,9 @@ public class Controller {
         }.start();
     }
     
+    /**
+     *
+     */
     protected void addAuthorSelected(){
         new Thread(){
         @Override

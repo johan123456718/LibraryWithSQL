@@ -24,6 +24,9 @@ public class BookMySQLDb implements BooksDbInterface {
 
     private Connection con;
 
+    /**
+     *
+     */
     public BookMySQLDb() {
         con = null;
     }
