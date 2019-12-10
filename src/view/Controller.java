@@ -307,7 +307,7 @@ public class Controller {
                 }
             }.start();
         }
-        catch (NullPointerException e){
+        catch (Exception e){
             javafx.application.Platform.runLater(
                 new Runnable(){
                 @Override
@@ -338,7 +338,7 @@ public class Controller {
                                 public void run(){
                                     try{
                                         boolean updated = booksDb.updateRating(result.get(0), result.get(1));
-                                        if(!updated){
+                                        if(updated){
                                             javafx.application.Platform.runLater(
                                             new Runnable() {
                                             @Override

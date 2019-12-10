@@ -56,21 +56,25 @@ public class BooksPane extends VBox {
     private MenuBar menuBar;
     private Dialog addBookDialog;
     private ArrayList<TextField> addBookTextField;
-    private ChoiceBox genreChoiceBox;
+    private ChoiceBox addBookGenreChoiceBox;
     private DatePicker publishDate;    
-    private DatePicker birthDate;
-    private TableView<Author> authorTable;
-    private ObservableList<Author> authorsInTable;
+    private DatePicker addBookBirthDate;
+    private TableView<Author> addBookAuthorTable;
+    private ObservableList<Author> addBookAuthorsInTable;
     
     private Dialog addRatingDialog;
-    private ChoiceBox ratingChoiceBox;
-    private TextField isbnTextField;
     
+    private TextField isbnTextField;
+    private ChoiceBox addRatingChoiceBox;
     private Dialog addAuthorDialog;
     private ArrayList<TextField> addAuthorTextField;
+    private DatePicker addAuthorBirthDate;
+    private TableView<Author> addAuthorAuthorTable;
+    private ObservableList<Author> addAuthorAuthorsInTable;
     
     private Dialog searchRatingDialog, searchGenreDialog;
-    
+    private ChoiceBox searchRatingChoiceBox;
+    private ChoiceBox genreChoiceBox;
                 
 
     public BooksPane(BookMySQLDb booksDb){
@@ -104,7 +108,8 @@ public class BooksPane extends VBox {
     private void init(Controller controller){
 
         booksInTable = FXCollections.observableArrayList();
-        authorsInTable = FXCollections.observableArrayList();
+        addBookAuthorsInTable = FXCollections.observableArrayList();
+        addAuthorAuthorsInTable = FXCollections.observableArrayList();
 
         // init views and event handlers
         initBooksTable();
@@ -163,24 +168,18 @@ public class BooksPane extends VBox {
     }
     
     private void initAuthorTable() {
-        authorTable = new TableView<>();
-        authorTable.setEditable(false); // don't allow user updates (yet)
-
+        addAuthorAuthorTable = new TableView<>();
+        addAuthorAuthorTable.setEditable(false); // don't allow user updates (yet)
         // define columns
         TableColumn<Author, String> idCol = new TableColumn<>("Author ID");
         TableColumn<Author, String> nameCol = new TableColumn<>("Name");
         TableColumn<Author, Date> dateCol = new TableColumn<>("Date of Birth");;
-        authorTable.getColumns().addAll(idCol, nameCol, dateCol);
-        // give title column some extra space
-        //nameCol.prefWidthProperty().bind(booksTable.widthProperty().multiply(0.5));
-
-        // define how to fill data for each cell, 
-        // get values from Book properties
+        addAuthorAuthorTable.getColumns().addAll(idCol, nameCol, dateCol);
         idCol.setCellValueFactory(new PropertyValueFactory<>(String.valueOf("authorId")));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("dob"));
         // associate the table view with the data
-        authorTable.setItems(authorsInTable);
+        addAuthorAuthorTable.setItems(addAuthorAuthorsInTable);
     }
 
     private void initSearchView(Controller controller) {
@@ -211,13 +210,10 @@ public class BooksPane extends VBox {
         fileMenu.getItems().addAll(exitItem, connectItem, disconnectItem);
 
         Menu searchMenu = new Menu("Search");
-        //MenuItem titleItem = new MenuItem("Title");
-        //MenuItem isbnItem = new MenuItem("ISBN");
-        MenuItem authorItem = new MenuItem("Author");
         MenuItem searchGenreItem = new MenuItem("Search Genre");
         MenuItem searchRatingItem = new MenuItem("Search Rating");
         MenuItem allItems = new MenuItem("Get all books");
-        searchMenu.getItems().addAll(authorItem, searchGenreItem, searchRatingItem, allItems);
+        searchMenu.getItems().addAll(searchGenreItem, searchRatingItem, allItems);
 
         Menu manageMenu = new Menu("Manage");
         MenuItem addItem = new MenuItem("Add");
@@ -309,13 +305,25 @@ public class BooksPane extends VBox {
                 GridPane addBookPane = new GridPane();
                 addBookTextField = new ArrayList<>();
 
-                genreChoiceBox = new ChoiceBox(FXCollections.observableArrayList("fantasy", "sci-fi", "crime", "drama", "romance", "science"));
-                genreChoiceBox.setTooltip(new Tooltip("Select genre"));
+                addBookGenreChoiceBox = new ChoiceBox(FXCollections.observableArrayList("fantasy", "sci-fi", "crime", "drama", "romance", "science"));
+                addBookGenreChoiceBox.setTooltip(new Tooltip("Select genre"));
                 publishDate = new DatePicker();
                 
-                birthDate = new DatePicker();
+                addBookBirthDate = new DatePicker();
+                addBookAuthorTable = new TableView<>();
+        addBookAuthorTable.setEditable(false); // don't allow user updates (yet)
+        // define columns
+        TableColumn<Author, String> idCol = new TableColumn<>("Author ID");
+        TableColumn<Author, String> nameCol = new TableColumn<>("Name");
+        TableColumn<Author, Date> dateCol = new TableColumn<>("Date of Birth");;
+        addBookAuthorTable.getColumns().addAll(idCol, nameCol, dateCol);
+        idCol.setCellValueFactory(new PropertyValueFactory<>(String.valueOf("authorId")));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("dob"));
+        // associate the table view with the data
+        addBookAuthorTable.setItems(addBookAuthorsInTable);
                 
-                initAuthorTable();
+                
                 
                 addBookTable(addBookPane);
                 addBookDialog.getDialogPane().setContent(addBookPane);
@@ -328,13 +336,15 @@ public class BooksPane extends VBox {
             addAuthorDialog.setTitle("Add Author");
             GridPane addAuthorPane = new GridPane();
             addAuthorTextField = new ArrayList();
+            addAuthorBirthDate = new DatePicker();
+            initAuthorTable();
             addAuthorTable(addAuthorPane);
             addAuthorDialog.getDialogPane().setContent(addAuthorPane);
         }
         
         public ArrayList<String> showAddBookDialog(List<Author> allAuthors){
-                authorsInTable.clear();
-                authorsInTable.addAll(allAuthors);
+                addBookAuthorsInTable.clear();
+                addBookAuthorsInTable.addAll(allAuthors);
                 addBookDialog.showAndWait();
 		addBookDialog.setResizable(true);
                     String isbn = null;
@@ -363,14 +373,14 @@ public class BooksPane extends VBox {
                     if (!addBookTextField.get(4).getText().equals("")){
                         publisher = addBookTextField.get(4).getText();
                     }
-                    if(genreChoiceBox.getValue() != null){
-                        genre = genreChoiceBox.getValue().toString();
+                    if(addBookGenreChoiceBox.getValue() != null){
+                        genre = addBookGenreChoiceBox.getValue().toString();
                     }
                     if(publishDate.getValue() != null){
                         pDate = publishDate.getValue().toString();
                     }                    
-                    if(birthDate.getValue() != null){
-                        bDate = birthDate.getValue().toString();
+                    if(addBookBirthDate.getValue() != null){
+                        bDate = addBookBirthDate.getValue().toString();
                     }
                 }
                 ArrayList<String> result = new ArrayList();
@@ -394,8 +404,8 @@ public class BooksPane extends VBox {
                 if(!isbnTextField.getText().equals("")){
                     isbn = isbnTextField.getText();
                 }
-                if(ratingChoiceBox.getValue() != null){
-                    rating = ratingChoiceBox.getValue().toString();
+                if(addRatingChoiceBox.getValue() != null){
+                    rating = addRatingChoiceBox.getValue().toString();
                 }
             }
             ArrayList<String> result = new ArrayList();
@@ -412,8 +422,8 @@ public class BooksPane extends VBox {
         searchRatingDialog.setTitle("Search Rating");
         GridPane searchRatingPane = new GridPane();
 
-        ratingChoiceBox = new ChoiceBox(FXCollections.observableArrayList("1", "2", "3", "4", "5"));
-        ratingChoiceBox.setTooltip(new Tooltip("Select ranking"));
+        searchRatingChoiceBox = new ChoiceBox(FXCollections.observableArrayList("1", "2", "3", "4", "5"));
+        searchRatingChoiceBox.setTooltip(new Tooltip("Select ranking"));
 
         searchRatingDialog.getDialogPane().setContent(searchRatingPane);
         searchRatingTable(searchRatingPane);
@@ -423,7 +433,7 @@ public class BooksPane extends VBox {
         ArrayList<Label> context = new ArrayList<>();
         context.add(new Label("Rating"));
         searchRatingPane.add(context.get(0), 0, 0);   
-        searchRatingPane.add(ratingChoiceBox, 2, 0);
+        searchRatingPane.add(searchRatingChoiceBox, 2, 0);
     }
     
     protected void searchGenreInit() {
@@ -452,8 +462,8 @@ public class BooksPane extends VBox {
 
         
     public ArrayList<String> showAddAuthorDialog(List<Author> allAuthors){
-            authorsInTable.clear();
-            authorsInTable.addAll(allAuthors);
+            addAuthorAuthorsInTable.clear();
+            addAuthorAuthorsInTable.addAll(allAuthors);
             addAuthorDialog.showAndWait();
             addAuthorDialog.setResizable(true);
             String isbn = null;
@@ -470,8 +480,8 @@ public class BooksPane extends VBox {
                 if(!addAuthorTextField.get(2).getText().equals("")){
                     authorId = addAuthorTextField.get(2).getText();
                 }
-                if(birthDate.getValue() != null){
-                    bDate = birthDate.getValue().toString();
+                if(addAuthorBirthDate.getValue() != null){
+                    bDate = addAuthorBirthDate.getValue().toString();
                 }
             }
             ArrayList<String> result = new ArrayList();
@@ -487,7 +497,9 @@ public class BooksPane extends VBox {
         searchGenreDialog.setResizable(true);  
         String genre = null;
         if (addBookDialog.getDialogPane().getButtonTypes().get(0).getButtonData() == ButtonData.OK_DONE) {
-            genre = genreChoiceBox.getValue().toString();
+            if(genreChoiceBox.getValue() != null){
+                genre = genreChoiceBox.getValue().toString();
+            }
         }
         return genre;
     }
@@ -497,12 +509,14 @@ public class BooksPane extends VBox {
             searchRatingDialog.setResizable(true);
             String rating = null;
             if (searchRatingDialog.getDialogPane().getButtonTypes().get(0).getButtonData() == ButtonData.OK_DONE) {
-                rating = ratingChoiceBox.getValue().toString();
+                if(searchRatingChoiceBox.getValue() != null){
+                    rating = searchRatingChoiceBox.getValue().toString();
+                }
             }
             return rating;
         }
         
-        private void addAuthorTable(GridPane addAuthorPane){
+    private void addAuthorTable(GridPane addAuthorPane){
             ArrayList<Label> context = new ArrayList<>();
 
             context.add(new Label("ISBN"));
@@ -518,11 +532,11 @@ public class BooksPane extends VBox {
                 addAuthorTextField.add(new TextField());
                 addAuthorPane.add(addAuthorTextField.get(i), 1, i);
             }
-                addAuthorPane.add(birthDate,1,3);
-                addAuthorPane.add(authorTable, 1, 4);
+                addAuthorPane.add(addAuthorBirthDate,1,3);
+                addAuthorPane.add(addAuthorAuthorTable, 1, 4);
         }
         
-        private void addBookTable(GridPane addBookPane){
+    private void addBookTable(GridPane addBookPane){
                 ArrayList<Label> context = new ArrayList<>();
                 context.add(new Label("ISBN"));
                 context.add(new Label("Title"));
@@ -543,27 +557,27 @@ public class BooksPane extends VBox {
                     addBookPane.add(addBookTextField.get(i), 1, i);
                 }
                 
-                addBookPane.add(genreChoiceBox,1,5);
+                addBookPane.add(addBookGenreChoiceBox,1,5);
                 
-                addBookPane.add(birthDate,1,6);
+                addBookPane.add(addBookBirthDate,1,6);
                 addBookPane.add(publishDate, 1, 7);
-                addBookPane.add(authorTable, 1, 8);       
+                addBookPane.add(addBookAuthorTable, 1, 8);       
         }
-        private void addRatingInit(){
-           addRatingDialog = new Dialog();
-           ButtonType button = new ButtonType("Send", ButtonData.OK_DONE);
-           addRatingDialog.getDialogPane().getButtonTypes().add(button);
-           addRatingDialog.setTitle("Add Rating");
-           GridPane addRatingPane = new GridPane();
-           isbnTextField = new TextField();
+    private void addRatingInit(){
+        addRatingDialog = new Dialog();
+        ButtonType button = new ButtonType("Send", ButtonData.OK_DONE);
+        addRatingDialog.getDialogPane().getButtonTypes().add(button);
+        addRatingDialog.setTitle("Add Rating");
+        GridPane addRatingPane = new GridPane();
+        isbnTextField = new TextField();
            
-           ratingChoiceBox = new ChoiceBox(FXCollections.observableArrayList("1", "2", "3", "4", "5"));
-           ratingChoiceBox.setTooltip(new Tooltip("Select ranking"));
+        addRatingChoiceBox = new ChoiceBox(FXCollections.observableArrayList("1", "2", "3", "4", "5"));
+        addRatingChoiceBox.setTooltip(new Tooltip("Select ranking"));
            
-           addRatingDialog.getDialogPane().setContent(addRatingPane);  
-           addRatingTable(addRatingPane);
-        }
-        private void addRatingTable(GridPane addRatingPane){
+        addRatingDialog.getDialogPane().setContent(addRatingPane);  
+        addRatingTable(addRatingPane);
+    }
+    private void addRatingTable(GridPane addRatingPane){
             ArrayList<Label> context = new ArrayList<>();
             context.add(new Label("ISBN"));
             context.add(new Label("Rating"));
@@ -571,6 +585,6 @@ public class BooksPane extends VBox {
                 addRatingPane.add(context.get(i), 0, i);
             }    
             addRatingPane.add(isbnTextField, 1, 0);
-            addRatingPane.add(ratingChoiceBox,1,1);
+            addRatingPane.add(addRatingChoiceBox,1,1);
         }
 }
